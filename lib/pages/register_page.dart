@@ -6,11 +6,10 @@ import 'package:auth/components/my_text_field.dart';
 import 'package:auth/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class Registerpage extends StatefulWidget {
   final Function()? onTap;
-  Registerpage({super.key, required this.onTap});
+  const Registerpage({super.key, required this.onTap});
 
   @override
   State<Registerpage> createState() => _RegisterpageState();

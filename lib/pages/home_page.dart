@@ -17,9 +17,9 @@ class HomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Text('LOGGED IN AS: ' + user.email!),
+            child: Text('LOGGED IN AS: ${user.email!}'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           ElevatedButton(
@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
               backgroundColor: MaterialStatePropertyAll(Colors.green[700]),
             ),
             onPressed: signUserOut,
-            child: Text(
+            child: const Text(
               'Sign Out',
               style: TextStyle(color: Colors.black),
             ),
