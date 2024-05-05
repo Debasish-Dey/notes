@@ -8,19 +8,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class LoginPage extends StatefulWidget {
+class Registerpage extends StatefulWidget {
   final Function()? onTap;
-  LoginPage({super.key, required this.onTap});
+  Registerpage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Registerpage> createState() => _RegisterpageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterpageState extends State<Registerpage> {
   final emailnameController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  void signUserIn() async {
+  void signUserUp() async {
     //loading circle
     showDialog(
       context: context,
@@ -33,10 +34,14 @@ class _LoginPageState extends State<LoginPage> {
 
     //sign in the user
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailnameController.text,
-        password: passwordController.text,
-      );
+      if (passwordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailnameController.text,
+          password: passwordController.text,
+        );
+      } else {
+        errorMessage('Passwords don\'t match');
+      }
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
       Navigator.pop(context);
@@ -76,13 +81,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Image.asset(
                   'lib/images/one.png',
-                  height: 180,
+                  height: 150,
                 ),
                 const SizedBox(
                   height: 30,
                 ),
                 const Text(
-                  "Welcome Back!!",
+                  "Create an account",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 30,
@@ -108,27 +113,17 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: 'Confirm Password',
+                  obscureText: true,
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 MyButton(
-                  onTap: signUserIn,
-                  text: 'Sign In',
+                  onTap: signUserUp,
+                  text: 'Sign Up',
                 ),
                 SizedBox(height: 15),
                 Padding(
@@ -183,7 +178,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a menber?',
+                      'Already Have an Account?',
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     SizedBox(
@@ -192,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                     GestureDetector(
                       onTap: widget.onTap,
                       child: Text(
-                        'Register Now',
+                        'Login Now',
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 16,

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class MyButton extends StatelessWidget {
   final Function()? onTap;
+  final String text;
 
   const MyButton({
     super.key,
     required this.onTap,
+    required this.text,
   });
 
   @override
@@ -21,7 +23,7 @@ class MyButton extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "Sign In",
+            text,
             style: TextStyle(color: Colors.white, fontSize: 18),
           ),
         ),
