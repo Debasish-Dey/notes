@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:auth/components/logo_tile.dart';
+// import 'package:auth/components/logo_tile.dart';
 import 'package:auth/components/my_button.dart';
 import 'package:auth/components/my_text_field.dart';
-import 'package:auth/services/auth_service.dart';
+// import 'package:auth/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 class Registerpage extends StatefulWidget {
   final Function()? onTap;
@@ -19,8 +20,20 @@ class _RegisterpageState extends State<Registerpage> {
   final emailnameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  bool obscurePassword = true;
+  bool obscureCnfPassword = true;
+
+  bool _validateEmail(String email) {
+    return EmailValidator.validate(email);
+  }
 
   void signUserUp() async {
+    // Validate email
+    if (!_validateEmail(emailnameController.text)) {
+      errorMessage('Please enter a valid email address');
+      return;
+    }
+
     //loading circle
     showDialog(
       context: context,
@@ -79,8 +92,8 @@ class _RegisterpageState extends State<Registerpage> {
                   height: 20,
                 ),
                 Image.asset(
-                  'lib/images/one.png',
-                  height: 150,
+                  'lib/images/notes.png',
+                  height: 200,
                 ),
                 const SizedBox(
                   height: 30,
@@ -107,7 +120,17 @@ class _RegisterpageState extends State<Registerpage> {
                 MyTextField(
                   controller: passwordController,
                   hintText: 'Password',
-                  obscureText: true,
+                  obscureText: obscurePassword,
+                  trailingIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -115,7 +138,19 @@ class _RegisterpageState extends State<Registerpage> {
                 MyTextField(
                   controller: confirmPasswordController,
                   hintText: 'Confirm Password',
-                  obscureText: true,
+                  obscureText: obscureCnfPassword,
+                  trailingIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscureCnfPassword = !obscureCnfPassword;
+                      });
+                    },
+                    icon: Icon(
+                      obscureCnfPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -124,55 +159,7 @@ class _RegisterpageState extends State<Registerpage> {
                   onTap: signUserUp,
                   text: 'Sign Up',
                 ),
-                SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Continue With',
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      LogoTile(
-                        imagePath: 'lib/images/two.png',
-                        height: 75,
-                        onTap: () => AuthService().signInWithGoogle(),
-                      ),
-                      LogoTile(
-                        imagePath: 'lib/images/three.png',
-                        height: 75,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 55),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

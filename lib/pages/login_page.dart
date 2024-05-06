@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:auth/components/logo_tile.dart';
+// import 'package:auth/components/logo_tile.dart';
 import 'package:auth/components/my_button.dart';
 import 'package:auth/components/my_text_field.dart';
-import 'package:auth/services/auth_service.dart';
+import 'package:auth/pages/forgot_pw_page.dart';
+// import 'package:auth/services/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -18,8 +20,19 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final emailnameController = TextEditingController();
   final passwordController = TextEditingController();
+  bool obscurePassword = true;
+
+  bool _validateEmail(String email) {
+    return EmailValidator.validate(email);
+  }
 
   void signUserIn() async {
+    // Validate email
+    if (!_validateEmail(emailnameController.text)) {
+      errorMessage('Please enter a valid email address');
+      return;
+    }
+
     //loading circle
     showDialog(
       context: context,
@@ -74,8 +87,8 @@ class _LoginPageState extends State<LoginPage> {
                   height: 20,
                 ),
                 Image.asset(
-                  'lib/images/one.png',
-                  height: 180,
+                  'lib/images/notes.png',
+                  height: 200,
                 ),
                 const SizedBox(
                   height: 30,
@@ -102,22 +115,44 @@ class _LoginPageState extends State<LoginPage> {
                 MyTextField(
                   controller: passwordController,
                   hintText: 'Password',
-                  obscureText: true,
+                  obscureText: obscurePassword,
+                  trailingIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        obscurePassword = !obscurePassword;
+                      });
+                    },
+                    icon: Icon(
+                      obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot Password?',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ForgotPasswordPage();
+                              },
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
@@ -129,61 +164,13 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: signUserIn,
                   text: 'Sign In',
                 ),
-                SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Continue With',
-                          style: TextStyle(color: Colors.white70),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 0.5,
-                          color: Colors.grey[400],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      LogoTile(
-                        imagePath: 'lib/images/two.png',
-                        height: 75,
-                        onTap: () => AuthService().signInWithGoogle(),
-                      ),
-                      LogoTile(
-                        imagePath: 'lib/images/three.png',
-                        height: 75,
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 55),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Not a menber?',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      'Not a member?',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
                     SizedBox(
                       width: 5,
@@ -194,7 +181,7 @@ class _LoginPageState extends State<LoginPage> {
                         'Register Now',
                         style: TextStyle(
                             color: Colors.blue,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold),
                       ),
                     )

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-  final controller;
+  final TextEditingController? controller;
   final String hintText;
   final bool obscureText;
+  final IconButton? trailingIcon;
 
-  const MyTextField(
-      {super.key,
-      this.controller,
-      required this.hintText,
-      required this.obscureText});
+  const MyTextField({
+    super.key,
+    this.controller,
+    required this.hintText,
+    required this.obscureText,
+    this.trailingIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class MyTextField extends StatelessWidget {
           filled: true,
           hintText: hintText,
           hintStyle: TextStyle(color: Colors.grey[500]),
+          suffixIcon: trailingIcon != null ? trailingIcon : null,
         ),
       ),
     );
