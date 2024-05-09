@@ -2,10 +2,9 @@ import 'package:auth/services/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,8 +20,15 @@ class _HomePageState extends State<HomePage> {
     FirebaseAuth.instance.signOut();
   }
 
-  void openNoteBox({String? docID, bool isUpdate = false}) {
+  void openNoteBox(
+      {String? docID, bool isUpdate = false, String? currentText}) {
     String titleText = isUpdate ? 'Update Text' : 'Add Note';
+
+    if (isUpdate) {
+      textController.text = currentText ?? '';
+    } else {
+      textController.clear();
+    }
 
     showDialog(
       context: context,
@@ -30,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.grey[300],
         title: Text(
           titleText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -64,13 +70,13 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  const SnackBar(
                     content: Text('Please enter some text.'),
                   ),
                 );
               }
             },
-            child: Text('Add'),
+            child: const Text('Add'),
           ),
         ],
       ),
@@ -82,7 +88,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[300],
-        title: Text(
+        title: const Text(
           'Do You Want To Delete This Note?',
           style: TextStyle(
             fontSize: 16,
@@ -96,13 +102,13 @@ class _HomePageState extends State<HomePage> {
               firestoreService.deleteNote(docID);
               Navigator.pop(context);
             },
-            child: Text('Yes'),
+            child: const Text('Yes'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text('No'),
+            child: const Text('No'),
           ),
         ],
       ),
@@ -114,13 +120,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Notes",
           style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.logout,
               color: Colors.black,
             ),
@@ -131,8 +137,8 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => openNoteBox(),
-        child: const Icon(Icons.add),
         backgroundColor: Colors.grey[400],
+        child: const Icon(Icons.add),
       ),
       body: StreamBuilder(
         stream: firestoreService.getNotesStream(),
@@ -155,7 +161,7 @@ class _HomePageState extends State<HomePage> {
 
                       return Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                            const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[400],
@@ -169,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                             title: Text(
                               noteText,
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 18),
+                                  const TextStyle(color: Colors.black, fontSize: 18),
                             ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -184,6 +190,7 @@ class _HomePageState extends State<HomePage> {
                                       onPressed: () => openNoteBox(
                                         docID: docID,
                                         isUpdate: true,
+                                        currentText: noteText,
                                       ),
                                       icon: const Icon(Icons.settings),
                                     ),
